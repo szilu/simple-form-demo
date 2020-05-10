@@ -1,0 +1,7 @@
+dist/assets
+dist/assets-dev
+package-lock.json
+node_modules
+.*\.sw?
+.*\.sav
+.cache

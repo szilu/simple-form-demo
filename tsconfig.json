@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+	"target": "es6",
+	"module": "CommonJS",
+	"jsx": "react",
+	"strict": true
+    },
+    "files": ["main.tsx"]
+}
