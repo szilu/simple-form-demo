@@ -1,10 +1,9 @@
 import * as React from 'react'
-import {render} from 'react-dom'
+import { render } from 'react-dom'
 
-import {useForm, withForm} from 'simple-form/lib/'
-import * as t from 'simple-form/lib/types'
-import * as F from 'simple-form/lib/components'
-
+import { useForm, withForm } from '@symbion/simple-form'
+import * as t from '@symbion/simple-form/lib/types'
+import * as F from '@symbion/simple-form/lib/components-withform'
 
 // Some branding types for validation
 /////////////////////////////////////
@@ -62,24 +61,21 @@ const initialFormValues = {
 	email: 'email@example.com'
 }
 
-
-/* We import the form components from the example library and run them through
- * the withForm HOC.
- * This is a bit much boilerplate, but it provides good type checking.
+/* For strict type checking we have to create specific components that know
+ * about our model type.
  *
- * syntax: withState< ValueType, PropType, FormModelType >
- *
- * Some components support multiple value types.
+ * If you are lazy, you can use generic components also exported from the
+ * library.
  */
-const TextInput = withForm<string, F.TextInputProps, TProfileStrict>(F.TextInput)
-const NumberInput = withForm<number, F.NumberInputProps, TProfileStrict>(F.NumberInput)
-const DateInput = withForm<string, F.DateInputProps, TProfileStrict>(F.DateInput)
-const CheckBox = withForm<boolean, F.CheckBoxProps, TProfileStrict>(F.CheckBox)
-const Radio = withForm<string, F.RadioProps<string>, TProfileStrict>(F.Radio)
-const NumberRadio = withForm<number, F.NumberRadioProps, TProfileStrict>(F.NumberRadio)
-const Select = withForm<string, F.SelectProps<string>, TProfileStrict>(F.Select)
-const NumberSelect = withForm<number, F.NumberSelectProps, TProfileStrict>(F.Select)
-const ColorInput = withForm<string, F.ColorInputProps, TProfileStrict>(F.ColorInput)
+const TextInput = F.createTextInput<TProfileStrict>()
+const NumberInput = F.createNumberInput<TProfileStrict>()
+const DateInput = F.createDateInput<TProfileStrict>()
+const CheckBox = F.createCheckBox<TProfileStrict>()
+const Radio = F.createRadio<TProfileStrict>()
+const NumberRadio = F.createNumberRadio<TProfileStrict>()
+const Select = F.createSelect<TProfileStrict>()
+const NumberSelect = F.createNumberSelect<TProfileStrict>()
+const ColorInput = F.createColorInput<TProfileStrict>()
 
 // Form component
 /////////////////
@@ -89,7 +85,7 @@ function ProfileForm() {
 	 *
 	 * syntax useForm< FormModelType > (FormModelRuntimeType, options)
 	 */
-	const form = useForm<TProfileStrict>(TProfile.strict, {formID: 'profile'})
+	const form = useForm<TProfileStrict>(TProfile.strict, { formID: 'profile' })
 
 	/* We could initialize the form immediately, but it's more interesting to emulate an async form loading with an Effect.
 	 */
@@ -105,8 +101,10 @@ function ProfileForm() {
 	 */
 	async function onSubmit() {
 		console.log('SUBMIT', form.valid() ? form.get() : 'invalid')
-		if (form.valid()) alert('Form submit\n---------------------\n\n'
-			+ Object.entries(form.get()).map(entry => entry.join(': ')).join('\n'))
+		if (form.valid()) {
+			alert('Form submit\n---------------------\n\n'
+				+ Object.entries(form.get()).map(entry => entry.join(': ')).join('\n'))
+		}
 	}
 
 	/* If the form is not initialized yet, we don't show it

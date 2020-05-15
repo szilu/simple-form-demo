@@ -1,2 +1,6 @@
-# simple-form-demo
-Demo project for simple-form form library
+Symbion Simple Form Library Demo
+================================
+
+Description
+-----------
+[Symbion Simple Form Library](https://github.com/szilu/simple-form) is a form library for React, TypeScript and io-ts.

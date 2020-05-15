@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "main": "index.js",
   "author": "Szilard Hajba <szilu@symbion.hu>",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
+    "clean": "rimraf dist",
+    "lint": "tslint -p tsconfig.json",
     "ts": "tsc --noEmit -p tsconfig.json",
     "ts-w": "tsc --noEmit --watch -p tsconfig.json",
     "build": "npm run ts && BABEL_ENV=client parcel build --no-source-maps --detailed-report --experimental-scope-hoisting --public-url /assets --out-dir dist/assets main.tsx",
@@ -19,17 +21,21 @@
     "@babel/plugin-transform-runtime": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
-    "@types/react": "^16.9.34",
-    "@types/react-dom": "^16.9.7",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-compress": "^2.0.2",
-    "typescript": "^3.8.3"
+    "rimraf": "^3.0.2",
+    "tslint": "^6.1.2",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^3.9.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "bootstrap": "^4.4.1",
-    "fp-ts": "^2.5.4",
-    "io-ts": "^2.2.1",
+    "@symbion/simple-form": "^0.1.0",
+    "bootstrap": "^4.5.0",
+    "fp-ts": "^2.6.1",
+    "io-ts": "^2.2.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }
