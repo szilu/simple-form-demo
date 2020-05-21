@@ -43,9 +43,9 @@ export const TProfile = t.formModel({
 	range: { base: t.number, strict: t.optional(PosInt) },
 	date: { base: DateT, strict: DateFuture },
 	agree: { base: t.boolean, strict: t.trueType },
-	vote: { base: t.string, strict: t.literal('1', '2', '3') },
-	vote2: { base: t.string, strict: t.literal('A', 'B', 'C') },
-	vote3: { base: t.number, strict: t.literal('1', '2', '3') },
+	vote: { base: t.string, strict: t.literals('1', '2', '3') },
+	vote2: { base: t.string, strict: t.literals('A', 'B', 'C') },
+	vote3: { base: t.number, strict: t.literals('1', '2', '3') },
 	color: { base: t.string }
 })
 
@@ -92,7 +92,6 @@ function ProfileForm() {
 	React.useEffect(() => {
 		setTimeout(() => {
 			const res = TProfile.base.decode(initialFormValues)
-			console.log('INIT', res)
 			if (t.isRight(res)) form.set(res.right)
 		}, 2000)
 	}, [])
@@ -117,7 +116,7 @@ function ProfileForm() {
 	 */
 	return <div>
 		<h1>Profile</h1>
-		<F.Form id='profile' onSubmit={onSubmit} onReset={form.reset} form={form}>
+		<F.Form onSubmit={onSubmit} onReset={form.reset} form={form}>
 			<F.FieldSet disabled={!form.state} legend='Text inputs'>
 				<TextInput name='name' label='Name' error='Please provide minimum 4 characters' form={form}/>
 				<TextInput name='email' type='email' label='Email' error='Please provide a valid email address' form={form}/>

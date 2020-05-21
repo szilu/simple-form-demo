@@ -1,6 +1,6 @@
 {
   "name": "simple-form-demo",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "main": "index.js",
   "author": "Szilard Hajba <szilu@symbion.hu>",
   "license": "MIT",
@@ -28,14 +28,14 @@
     "rimraf": "^3.0.2",
     "tslint": "^6.1.2",
     "tslint-config-standard": "^9.0.0",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "@symbion/simple-form": "^0.1.0",
+    "@symbion/simple-form": "^0.3.0",
     "bootstrap": "^4.5.0",
     "fp-ts": "^2.6.1",
-    "io-ts": "^2.2.2",
+    "io-ts": "^2.2.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }
