@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@symbion/simple-form": "^0.3.0",
+    "@symbion/simple-form": "^0.4.0",
     "bootstrap": "^4.5.2",
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",

@@ -9,19 +9,11 @@ import { V } from '@symbion/simple-form/lib/validator'
 //////////////////////
 const isFutureDate: t.Validator<string> = async (value: string) => new Promise(resolve => setTimeout(() => resolve(typeof value == 'string' && Date.parse(value) > Date.now()), 1000))
 
-// Validator class
-//////////////////
-
 // Form data model
 //////////////////
 
-/* We can define two types for each field.
- * The BASE type should accept any initial value for the form (for
- * example empty fields and older API results)
- * The STRICT type is used for validation
- *
- * In the example we use basic types for BASE and branding types for STRICT.
- * STRICT can be omitted.
+/* We can define two IO-TS types for each field.
+ * Validators further constrain the acceptable values
  */
 export const profileModel = t.formModel({
 	name: { type: t.string, valid: V.string().minLength(4) },
