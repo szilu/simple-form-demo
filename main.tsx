@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 
-import { useForm, withForm, t } from '@symbion/simple-form'
+import * as t from '@symbion/simple-form'
 import typedInputs from '@symbion/simple-form/lib/components-withform'
 import { V } from '@symbion/simple-form/lib/validator'
 
@@ -54,7 +54,7 @@ function ProfileForm() {
 	 *
 	 * syntax useForm< FormModelType > (FormModelRuntimeType, options)
 	 */
-	const form = useForm<TProfile>(profileModel, { formID: 'profile' })
+	const form = t.useForm<TProfile>(profileModel, { formID: 'profile' })
 
 	/* We could initialize the form immediately, but it's more interesting to emulate an async form loading with an Effect.
 	 */
