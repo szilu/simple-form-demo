@@ -1,9 +1,14 @@
 {
     "compilerOptions": {
 	"target": "es2019",
-	"module": "es2015",
 	"jsx": "react",
-	"strict": true
+	"strict": true,
+
+	"module": "esnext",
+	"esModuleInterop": true,
+	"moduleResolution": "node",
+
+	"baseUrl": "."
     },
     "files": ["main.tsx"]
 }

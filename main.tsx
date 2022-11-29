@@ -1,44 +1,37 @@
 import * as React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 
-import * as t from '@symbion/simple-form'
-import typedInputs from '@symbion/simple-form/lib/components-withform'
-import { V } from '@symbion/simple-form/lib/validator'
+import * as T from '@symbion/runtype'
+import { useForm, useFormSchema } from '@symbion/simple-form'
+import typedInputs from '@symbion/simple-form/esm/components-withform'
 
 // Validator functions
 //////////////////////
-const isFutureDate: t.Validator<string> = async (value: string) => new Promise(resolve => setTimeout(() => resolve(typeof value == 'string' && Date.parse(value) > Date.now()), 1000))
+function isFutureDate(v: string | undefined) {
+	return new Promise<T.Result<string | undefined, T.RTError>>(resolve => setTimeout(() => resolve(typeof v == 'string' && Date.parse(v) && Date.parse(v) > Date.now() ? T.ok(v) : T.error("Can't be in the past")), 1000))
+}
 
 // Form data model
 //////////////////
-
-/* We can define two IO-TS types for each field.
- * Validators further constrain the acceptable values
- */
-export const profileModel = t.formModel({
-	name: { type: t.string, valid: V.string().minLength(4) },
-	email: { type: t.string, valid: V.string().email() },
-	password: { type: t.string, valid: V.string().minLength(8) },
-	age: { type: t.optional(t.number), valid: V.number() },
-	range: { type: t.number, valid: V.number().positive().integer() },
-	date: { type: t.optional(t.string), valid: isFutureDate },
-	agree: { type: t.boolean, valid: V.boolean().true() },
-	vote: { type: t.string, valid: V.string().in(['1', '2', '3']) },
-	vote2: { type: t.string, valid: V.string().in(['A']) },
-	vote3: { type: t.number, valid: V.number().in([2]) },
-	color: { type: t.string }
+const tProfile = T.struct({
+	name: T.string.minLength(4),
+	email: T.string.email(),
+	password: T.string.minLength(8),
+	age: T.optional(T.number),
+	range: T.number.min(0).integer(),
+	date: T.optional(T.string).addValidator(isFutureDate),
+	agree: T.boolean.true(),
+	vote: T.string.in('1', '2', '3'),
+	vote2: T.string.in('A'),
+	vote3: T.number.in(2),
+	color: T.string
 })
+type TProfile = T.TypeOf<typeof tProfile>
 
-/* The formModel helper provides two io-ts types for the model
- */
-type TProfilePartial = t.TypeOf<typeof profileModel.base>
-type TProfile = t.TypeOf<typeof profileModel.strict>
-
-/* These are just some values for demonstration.
- */
 const initialFormValues = {
 	name: 'XY',
-	email: 'email@example.com'
+	email: 'email@example.com',
+	zizi: 'zizi'
 }
 
 /* For strict type checking we have to create specific components that know
@@ -54,14 +47,14 @@ function ProfileForm() {
 	 *
 	 * syntax useForm< FormModelType > (FormModelRuntimeType, options)
 	 */
-	const form = t.useForm<TProfile>(profileModel, { formID: 'profile' })
+	const form = useForm(tProfile, { formID: 'profile' })
 
 	/* We could initialize the form immediately, but it's more interesting to emulate an async form loading with an Effect.
 	 */
 	React.useEffect(() => {
 		setTimeout(() => {
-			form.setStrict(initialFormValues)
-		}, 2000)
+			form.setStrict(initialFormValues, { unknownFields: 'discard'})
+		}, 1000)
 	}, [])
 
 	/* This is our onSubmit handler, it's pretty empty.
@@ -77,48 +70,60 @@ function ProfileForm() {
 
 	/* If the form is not initialized yet, we don't show it
 	 */
-	if (!form.state) return <h2 className='text-center'>Loading...</h2>
+	if (!form.state) return <h2 className="text-center">Loading...</h2>
 
 	/* We render the form.
 	 * The withForm() HOC injects most of the props into the components, we
 	 * just provide the FORM object from the useForm() hook.
 	 */
-	return <div>
+	return <div className="container mt-4">
 		<h1>Profile</h1>
 		<F.Form onSubmit={onSubmit} onReset={form.reset} form={form}>
-			<F.FieldSet disabled={!form.state} legend='Text inputs'>
-				<F.TextInput name='name' label='Name' error='Please provide minimum 4 characters' form={form}/>
-				<F.TextInput name='email' type='email' label='Email' error='Please provide a valid email address' form={form}/>
-				<F.TextInput name='password' type='password' label='Password' error='Please provide minimum 8 characters' form={form}/>
-			</F.FieldSet>
-			<F.FieldSet disabled={!form.state} legend='Numeric inputs'>
-				<F.NumberInput name='age' label='Age' error='Please provide a positive integer' form={form}/>
-				<F.NumberInput name='range' type='range' label='Range' error='X' min={0} max={100} step={1} form={form}/>
-			</F.FieldSet>
-			<F.FieldSet disabled={!form.state} legend='Date inputs'>
-				<F.DateInput name='date' label='Date' error='Please provide a future date' form={form} min={new Date().toISOString().substr(0, 10)}/>
-			</F.FieldSet>
-			<F.FieldSet disabled={!form.state} legend='Radio buttons'>
-				<F.Radio name='vote' radioValue='1' label='Option 1' form={form}/>
-				<F.Radio name='vote' radioValue='2' label='Option 2' form={form}/>
-				<F.Radio name='vote' radioValue='3' label='Option 3' form={form} error='Please choose'/>
-			</F.FieldSet>
-			<F.FieldSet disabled={!form.state} legend='Other inputs'>
-				<F.Select name='vote2' label='Vote'
-					options={[[undefined, 'Please select'], ['A', 'Option A'], ['B', 'Option B'], ['C', 'Option C']]}
-					error='Please select option A'
-					form={form}
-				/>
-				<F.NumberSelect name='vote3' label='Vote'
-					options={[[undefined, 'Please select'], [1, 'Option 1'], [2, 'Option 2'], [3, 'Option 3']]}
-					error='Please select option 2'
-					form={form}
-				/>
-				<F.ColorInput name='color' label='Color' form={form}/>
-			</F.FieldSet>
-			<F.CheckBox name='agree' label='I agree to any conditions :)' error='You must agree to our conditions' form={form}/>
-			<F.Button type='submit' className='btn-primary'>Submit</F.Button>
-			<F.Button type='reset' className='btn-secondary'>Reset</F.Button>
+			<div className="row">
+				<div className="col-sm">
+					<F.FieldSet disabled={!form.state} legend="Text inputs">
+						{/*
+						<F.TextInput name="name" label="Name" error="Please provide minimum 4 characters" form={form}/>
+						*/}
+						<label className="form-group d-block">Name
+							<input className={'form-control' + (form.errors.name ? ' is-invalid' : form.errors.name == false ? ' is-valid' : '')} type="text" {...form.props('name')}/>
+							{form.errors.name && <div className="invalid-feedback">Please provide minimum 4 characters</div>}
+						</label>
+						<F.TextInput name="email" type="email" label="Email" error="Please provide a valid email address" form={form}/>
+						<F.TextInput name="password" type="password" label="Password" error="Please provide minimum 8 characters" form={form}/>
+					</F.FieldSet>
+					<F.FieldSet disabled={!form.state} legend="Numeric inputs">
+						<F.NumberInput name="age" label="Age" error="Please provide a positive integer" form={form}/>
+						<F.NumberInput name="range" type="range" label="Range" error="X" min={0} max={100} step={1} form={form}/>
+					</F.FieldSet>
+				</div>
+				<div className="col-sm">
+					<F.FieldSet disabled={!form.state} legend="Date input">
+						<F.DateInput name="date" label="Date" error="Please provide a future date" form={form} min={new Date().toISOString().substr(0, 10)}/>
+					</F.FieldSet>
+					<F.FieldSet disabled={!form.state} legend="Radio buttons">
+						<F.Radio name="vote" radioValue="1" label="Option 1" form={form}/>
+						<F.Radio name="vote" radioValue="2" label="Option 2" form={form}/>
+						<F.Radio name="vote" radioValue="3" label="Option 3" form={form} error="Please choose"/>
+					</F.FieldSet>
+					<F.FieldSet disabled={!form.state} legend="Other inputs">
+						<F.Select name="vote2" label="Vote"
+							options={[[undefined, 'Please select'], ['A', 'Option A'], ['B', 'Option B'], ['C', 'Option C']]}
+							error="Please select option A"
+							form={form}
+						/>
+						<F.NumberSelect name="vote3" label="Vote"
+							options={[[undefined, 'Please select'], [1, 'Option 1'], [2, 'Option 2'], [3, 'Option 3']]}
+							error="Please select option 2"
+							form={form}
+						/>
+						<F.ColorInput name="color" label="Color" form={form}/>
+					</F.FieldSet>
+				</div>
+			</div>
+			<F.CheckBox name="agree" label="I agree to any conditions :)" error="You must agree to our conditions" form={form}/>
+			<F.Button type="submit" className="btn-primary">Submit</F.Button>
+			<F.Button type="reset" className="btn-secondary ml-2">Reset</F.Button>
 		</F.Form>
 	</div>
 }
@@ -127,7 +132,7 @@ function ProfileForm() {
  *
  * That's it
  */
-const appElement = document.getElementById('app')
-if (appElement) render(<div className='container'><ProfileForm/></div>, appElement)
+const root = createRoot(document.getElementById('app')!)
+root.render(<div className='container'><ProfileForm/></div>)
 
 // vim: ts=4
