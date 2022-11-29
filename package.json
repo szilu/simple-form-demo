@@ -11,7 +11,8 @@
     "ts": "tsc --noEmit -p tsconfig.json",
     "ts-w": "tsc --noEmit --watch -p tsconfig.json",
     "build": "NODE_ENV=production rollup -c",
-    "watch": "rollup -w -c"
+    "watch": "rollup -w -c",
+    "start": "web-dev-server"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^4.0.2",
@@ -22,6 +23,7 @@
     "@rollup/plugin-typescript": "^10.0.1",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
+    "@web/dev-server": "^0.1.35",
     "rimraf": "^3.0.2",
     "rollup": "^3.5.0",
     "rollup-plugin-analyzer": "^4.0.0",
