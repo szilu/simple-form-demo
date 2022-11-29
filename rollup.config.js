@@ -1,15 +1,18 @@
 const extensions = ['.js', '.ts', '.tsx']
 const isProd = process.env.NODE_ENV === 'production'
 
+import analyze from 'rollup-plugin-analyzer'
 import alias from '@rollup/plugin-alias'
 import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 import { terser } from 'rollup-plugin-terser'
-import progress from 'rollup-plugin-progress'
 import gzip from 'rollup-plugin-gzip'
-import size from 'rollup-plugin-size'
+
+import * as path from 'path'
+import * as url from 'url'
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 export default {
 	input: 'main.tsx',
@@ -26,15 +29,15 @@ export default {
 			]
 		}),
 		replace({
+			preventAssignment: true,
 			'process.env.NODE_ENV': JSON.stringify(isProd ? 'production' : 'development'),
 		}),
 		resolve({ extensions }),
-		typescript({ module: 'ES2015' }),
+		typescript(),
 		commonjs(),
 		isProd && terser(),
 		gzip(),
-		size(),
-		progress()
+		isProd && analyze({ summaryOnly: true, limit: 10 })
 	],
 	// This is needed because typescript generates buggy ES6 module files:
 	onwarn: (warning, warn) => warning.code === 'THIS_IS_UNDEFINED' || warn(warning)
