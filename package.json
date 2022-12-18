@@ -10,7 +10,7 @@
     "lint": "tslint -p tsconfig.json",
     "ts": "tsc --noEmit -p tsconfig.json",
     "ts-w": "tsc --noEmit --watch -p tsconfig.json",
-    "build": "NODE_ENV=production rollup -c",
+    "build": "rollup -c",
     "watch": "rollup -w -c",
     "start": "web-dev-server"
   },
