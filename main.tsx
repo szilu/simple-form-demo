@@ -14,7 +14,7 @@ function isFutureDate(v: string | undefined) {
 // Form data model
 //////////////////
 const tProfile = T.struct({
-	name: T.string.minLength(4),
+	name: T.string.minLength(3),
 	email: T.string.email(),
 	password: T.string.minLength(8),
 	age: T.optional(T.number),
@@ -89,17 +89,17 @@ function ProfileForm() {
 							<input className={'form-control' + (form.errors.name ? ' is-invalid' : form.errors.name == false ? ' is-valid' : '')} type="text" {...form.props('name')}/>
 							{form.errors.name && <div className="invalid-feedback">Please provide minimum 4 characters</div>}
 						</label>
-						<F.TextInput name="email" type="email" label="Email" error="Please provide a valid email address" form={form}/>
-						<F.TextInput name="password" type="password" label="Password" error="Please provide minimum 8 characters" form={form}/>
+						<F.TextInput name="email" type="email" label="Email" error="Please provide a valid email address"/>
+						<F.TextInput name="password" type="password" label="Password" error="Please provide minimum 8 characters"/>
 					</F.FieldSet>
 					<F.FieldSet disabled={!form.state} legend="Numeric inputs">
-						<F.NumberInput name="age" label="Age" error="Please provide a positive integer" form={form}/>
-						<F.NumberInput name="range" type="range" label="Range" error="X" min={0} max={100} step={1} form={form}/>
+						<F.NumberInput name="age" label="Age" error="Please provide a positive integer"/>
+						<F.NumberInput name="range" type="range" label="Range" error="X" min={0} max={100} step={1}/>
 					</F.FieldSet>
 				</div>
 				<div className="col-sm">
 					<F.FieldSet disabled={!form.state} legend="Date input">
-						<F.DateInput name="date" label="Date" error="Please provide a future date" form={form} min={new Date().toISOString().substr(0, 10)}/>
+						<F.DateInput name="date" label="Date" error="Please provide a future date" min={new Date().toISOString().substr(0, 10)}/>
 					</F.FieldSet>
 					<F.FieldSet disabled={!form.state} legend="Radio buttons">
 						<F.Radio name="vote" radioValue="1" label="Option 1" form={form}/>
