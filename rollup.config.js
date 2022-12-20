@@ -17,7 +17,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 export default {
 	input: 'main.tsx',
 	output: {
-		dir: isProd ? './dist/assets' : './dist/assets-dev',
+		dir: './dist/assets',
 		assetFileNames: '[name].[ext]',
 		name: 'main',
 		format: 'iife'

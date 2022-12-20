@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     rootDir: "./dist/",
     port: 8000,
     nodeResolve: true,
